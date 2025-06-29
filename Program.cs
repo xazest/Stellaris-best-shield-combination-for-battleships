@@ -19,6 +19,10 @@ while (true)
     if (index >= 0 && index < shields.Count)
     {
         shields[index].Checked = !shields[index].Checked;
+        if(shields[index] == shields[8])
+        {
+            shields[index].Checked = true;
+        }
     }
     else if (key == ConsoleKey.Enter)
     {
@@ -46,6 +50,7 @@ if (availableShields.Count == 0)
 {
     Console.WriteLine("No shields selected. Press any key to try again.");
     Console.ReadKey();
+    Console.Clear();
     goto Start;
 }
 
@@ -55,6 +60,7 @@ if (bestCombination == null || bestCombination.Count == 0)
 {
     Console.WriteLine("No valid combination found. Press any key to try again.");
     Console.ReadKey();
+    Console.Clear();
     goto Start;
 }
 else
@@ -64,10 +70,10 @@ else
     {
         Console.WriteLine($"{shield.Name} | Power: {shield.Power}, ShieldPoints: {shield.ShieldPoints}");
     }
-    Console.WriteLine($"Total Power: {bestCombination.Sum(s => s.Power)}");
+    Console.WriteLine($"\nTotal Power: {bestCombination.Sum(s => s.Power)}");
     Console.WriteLine($"Total ShieldPoints: {bestCombination.Sum(s => s.ShieldPoints)}");
 }
-Console.WriteLine("Press any key to continue...");
+Console.WriteLine("\nPress any key to continue...");
 Console.ReadKey();
 Console.Clear();
 goto Start;

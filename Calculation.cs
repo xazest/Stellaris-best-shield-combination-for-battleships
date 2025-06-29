@@ -16,7 +16,7 @@ namespace ShieldCompositon
                 int totalPower = combo.Sum(s => s.Power);
                 int totalShield = combo.Sum(s => s.ShieldPoints);
 
-                if (totalPower <= maxPower && totalShield > maxShieldPoints)
+                if (totalPower <= maxPower && totalShield >= maxShieldPoints)
                 {
                     maxShieldPoints = totalShield;
                     bestCombo = combo;

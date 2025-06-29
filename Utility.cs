@@ -23,6 +23,7 @@ namespace ShieldCompositon
             foreach (var shield in shields)
             {
                 Console.ForegroundColor = shield.Checked ? ConsoleColor.Green : ConsoleColor.Red;
+                if (shield == shields[8]) { continue; }
                 Console.Write($"\t{shield.Name} {(shield.Checked ? "[√]" : "[×]")}\t");
                 if (shield == shields[4]) { Console.WriteLine("\n"); }
             }
