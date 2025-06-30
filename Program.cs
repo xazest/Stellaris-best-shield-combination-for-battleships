@@ -34,12 +34,14 @@ while (true)
 DataService.Save(shields);
 Console.Clear();
 Utility.WriteShields(shields);
+
+int inputLine = Console.CursorTop;
 Console.Write("Avaliable amount of power: ");
 while (!int.TryParse(Console.ReadLine(), out maxPower))
 {
-    Console.SetCursorPosition(0, Console.CursorTop - 1);
+    Console.SetCursorPosition(0, inputLine);
     Console.Write(new string(' ', Console.WindowWidth));
-    Console.SetCursorPosition(0, Console.CursorTop);
+    Console.SetCursorPosition(0, inputLine);
     Console.Write("Avaliable amount of power: ");
 }
 Console.WriteLine();
