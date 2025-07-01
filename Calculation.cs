@@ -1,4 +1,4 @@
-﻿using ShieldCompositon.Shields;
+﻿using ShieldCompositon.Ships.Shields;
 
 namespace ShieldCompositon
 {

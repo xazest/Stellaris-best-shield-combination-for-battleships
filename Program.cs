@@ -1,43 +1,60 @@
 ﻿using ShieldCompositon;
-using ShieldCompositon.Shields;
+using ShieldCompositon.Data;
+using ShieldCompositon.Ships;
 
 Console.OutputEncoding = System.Text.Encoding.Unicode;
+
+int avaliablePower;
+Ship selectedShip;
+
 Start:
 
-int slots = 6;
-var shields = DataService.Load();
-int maxPower;
-
+Utility.WriteCyanInCenter("-Select ship-\n");
+Utility.WriteShips();
 while (true)
 {
-    Utility.WriteCyanInCenter("-Check/uncheck avaliable shield types-\n");
-    Utility.WriteShields(shields);
+    var key = Utility.ReadKeyInvisibly();
+    int index = key - ConsoleKey.D1;
+    if (index >= 0 && index < ShipTypes.Main.Count)
+    {
+        selectedShip = ShipTypes.Main[index];
+        break;
+    }
+}
+Console.Clear();
+Utility.WriteCyanInCenter($"-Selected ship: {selectedShip.Name}-");
+
+var selectedShields = DataService.Load();
+var consolePos = Console.GetCursorPosition();
+while (true)
+{
+    Utility.WriteCyanInCenter("-Check/uncheck avaliable shield types-");
+    Utility.WriteShields(selectedShields, 1);
     Utility.WriteCyanInCenter("Press Enter when finish");
 
-    var key = Utility.ReadKeyInsisibly();
+    var key = Utility.ReadKeyInvisibly();
     int index = key - ConsoleKey.D1;
-    if (index >= 0 && index < shields.Count)
+    if (index >= 0 && index < selectedShields.Count - 1)
     {
-        shields[index].Checked = !shields[index].Checked;
-        if(shields[index] == shields[8])
-        {
-            shields[index].Checked = true;
-        }
+        selectedShields[index].Checked = !selectedShields[index].Checked;
     }
     else if (key == ConsoleKey.Enter)
     {
         break;
     }
-    Console.SetCursorPosition(0, 0);
+    Console.SetCursorPosition(consolePos.Left, consolePos.Top);
 }
 
-DataService.Save(shields);
+DataService.Save(selectedShields);
 Console.Clear();
-Utility.WriteShields(shields);
+
+Utility.WriteCyanInCenter($"-Selected ship: {selectedShip.Name}-");
+Utility.WriteCyanInCenter($"-Selected shields-\n");
+Utility.WriteShields(selectedShields);
 
 int inputLine = Console.CursorTop;
 Console.Write("Avaliable amount of power: ");
-while (!int.TryParse(Console.ReadLine(), out maxPower))
+while (!int.TryParse(Console.ReadLine(), out avaliablePower))
 {
     Console.SetCursorPosition(0, inputLine);
     Console.Write(new string(' ', Console.WindowWidth));
@@ -46,7 +63,9 @@ while (!int.TryParse(Console.ReadLine(), out maxPower))
 }
 Console.WriteLine();
 
-var availableShields = shields.Where(s => s.Checked).ToList();
+var availableShields = selectedShip.ShieldType
+    .Where(shield => selectedShields.Any(sel => sel.Checked && sel.Name == shield.Name))
+    .ToList();
 
 if (availableShields.Count == 0)
 {
@@ -56,7 +75,7 @@ if (availableShields.Count == 0)
     goto Start;
 }
 
-var bestCombination = Calculation.GetBestShieldCombination(availableShields, slots, maxPower);
+var bestCombination = Calculation.GetBestShieldCombination(availableShields, selectedShip.Slots, avaliablePower);
 
 if (bestCombination == null || bestCombination.Count == 0)
 {
