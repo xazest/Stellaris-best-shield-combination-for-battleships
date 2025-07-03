@@ -65,8 +65,10 @@ namespace ShieldCompositon
             Console.WriteLine();
         }
 
-        public static void PrintShips(List<Ship> shiptype)
+        public static void SelectShip(List<Ship> shiptype, out Ship selectedShip)
         {
+            WriteLineInCenter("-Select ship-\n");
+
             int currentLineLength = 0;
             int idx = 1;
             foreach (var ship in shiptype)
@@ -82,6 +84,17 @@ namespace ShieldCompositon
                 idx++;
             }
             Console.WriteLine();
+            while (true)
+            {
+                var key = Utility.ReadKeyInvisibly();
+                int index = key - ConsoleKey.D1;
+                if (index >= 0 && index < shiptype.Count)
+                {
+                    selectedShip = shiptype[index];
+                    break;
+                }
+            }
+            Console.Clear();
         }
 
         public static void PrintTableResult(List<Shield> shields)
@@ -142,6 +155,37 @@ namespace ShieldCompositon
                 DataService.Save(selectedShields);
                 Console.Clear();
             } while (!selectedShields.Any(s => s.Checked && s.Name != "empty slot"));
+        }
+
+        public static void SelectShipType(out List<Ship> shiptype)
+        {
+            const int cellWidth = 30;
+            var shipGroups = new List<(List<Ship> category, string name)>
+            {
+                (ShipTypes.Main, "(1) Main Ships" ),
+                (ShipTypes.Defensive, "(2) Defensive platforms"),
+                (ShipTypes.Ancient, "(3) Ancient Ships"),
+            };
+
+            WriteLineInCenter("Select ship type:\n");
+
+            for (int i = 0; i < shipGroups.Count; i++)
+            {
+                string entry = $"{shipGroups[i].name}";
+                Console.Write(entry.PadRight(cellWidth));
+            }
+
+            while (true)
+            {
+                var key = ReadKeyInvisibly();
+                int index = key - ConsoleKey.D1;
+                if (index >= 0 && index < shipGroups.Count)
+                {
+                    shiptype = shipGroups[index].category;
+                    break;
+                }
+            }
+            Console.Clear();
         }
     }
 }

@@ -5,24 +5,14 @@ using ShieldCompositon.Ships;
 Console.OutputEncoding = System.Text.Encoding.Unicode;
 
 Start:
-int avaliablePower;
-var shiptype = ShipTypes.Main; //заглушка для выбора типа корабля
+List<Ship> shiptype;
 Ship selectedShip;
 var selectedShields = new List<SelectedShield>();
+int avaliablePower;
 
-Utility.WriteLineInCenter("-Select ship-\n");
-Utility.PrintShips(shiptype);
-while (true)
-{
-    var key = Utility.ReadKeyInvisibly();
-    int index = key - ConsoleKey.D1;
-    if (index >= 0 && index < shiptype.Count)
-    {
-        selectedShip = shiptype[index];
-        break;
-    }
-}
-Console.Clear();
+Utility.SelectShipType(out shiptype);
+
+Utility.SelectShip(shiptype, out selectedShip);
 
 Utility.SelectShields(out selectedShields);
 
