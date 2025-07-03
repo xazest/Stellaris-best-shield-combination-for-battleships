@@ -2,7 +2,7 @@
 
 namespace ShieldCompositon.Ships
 {
-    internal class ShipTypes
+    internal static class ShipTypes
     {
         public static readonly List<Ship> Main =
         [

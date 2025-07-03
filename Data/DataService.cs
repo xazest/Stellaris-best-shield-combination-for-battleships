@@ -6,7 +6,7 @@ namespace ShieldCompositon.Data
     {
         private static readonly string _path = "SelectedShields.json";
 
-        public static List<SelectedShields> Load()
+        public static List<SelectedShield> Load()
         {
             if (!File.Exists(_path))
             {
@@ -17,9 +17,9 @@ namespace ShieldCompositon.Data
             }
 
             string json = File.ReadAllText(_path);
-            return JsonConvert.DeserializeObject<List<SelectedShields>>(json);
+            return JsonConvert.DeserializeObject<List<SelectedShield>>(json);
         }
-        public static void Save(List<SelectedShields> selectedShields)
+        public static void Save(List<SelectedShield> selectedShields)
         {
             string json = JsonConvert.SerializeObject(selectedShields, Formatting.Indented);
             File.WriteAllText(_path, json);

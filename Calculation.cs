@@ -6,43 +6,53 @@ namespace ShieldCompositon
     {
         public static List<Shield> GetBestShieldCombination(List<Shield> shields, int slots, int maxPower)
         {
-            List<Shield> bestCombo = null;
-            int maxShieldPoints = 0;
+            var dp = new int[maxPower + 1, slots + 1];
+            var usedShields = new List<Shield>[maxPower + 1, slots + 1];
 
-            var allCombos = GetCombinationsWithRepetition(shields, slots);
-
-            foreach (var combo in allCombos)
+            for (int i = 0; i <= maxPower; i++)
             {
-                int totalPower = combo.Sum(s => s.Power);
-                int totalShield = combo.Sum(s => s.ShieldPoints);
-
-                if (totalPower <= maxPower && totalShield >= maxShieldPoints)
+                for (int j = 0; j <= slots; j++)
                 {
-                    maxShieldPoints = totalShield;
-                    bestCombo = combo;
+                    usedShields[i, j] = new List<Shield>();
                 }
             }
 
-            return bestCombo ?? new List<Shield>();
-        }
-
-        static IEnumerable<List<Shield>> GetCombinationsWithRepetition(List<Shield> items, int length)
-        {
-            int[] indices = new int[length];
-            int count = (int)Math.Pow(items.Count, length);
-
-            for (int i = 0; i < count; i++)
+            for (int i = 0; i <= maxPower; i++)
             {
-                var combo = new List<Shield>();
-                int num = i;
-                for (int j = 0; j < length; j++)
+                for (int j = 0; j <= slots; j++)
                 {
-                    indices[j] = num % items.Count;
-                    num /= items.Count;
-                    combo.Add(items[indices[j]]);
+                    foreach (var shield in shields)
+                    {
+                        if (i + shield.Power <= maxPower &&
+                            j + 1 <= slots &&
+                            dp[i, j] + shield.ShieldPoints > dp[i + shield.Power, j + 1])
+                        {
+                            dp[i + shield.Power, j + 1] = dp[i, j] + shield.ShieldPoints;
+                            usedShields[i + shield.Power, j + 1] = new List<Shield>(usedShields[i, j]) { shield };
+                        }
+                    }
                 }
-                yield return combo;
             }
+
+            int maxShield = 0;
+            int bestPower = 0;
+            for (int i = 0; i <= maxPower; i++)
+            {
+                if (dp[i, slots] > maxShield)
+                {
+                    maxShield = dp[i, slots];
+                    bestPower = i;
+                }
+            }
+
+            List<Shield> result = usedShields[bestPower, slots];
+
+            while(result.Count < slots)
+            {
+                result.Add(new Shield("empty slot", 0, 0));
+            }
+
+            return result;
         }
     }
 }
